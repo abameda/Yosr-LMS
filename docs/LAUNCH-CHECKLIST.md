@@ -1,0 +1,214 @@
+# Yosr MVP Launch Checklist
+
+Launch requires every blocking item to be complete or explicitly waived by the responsible owner with a documented reason.
+
+## Product and Content
+
+- [ ] Launch Categories are intentional and limited.
+- [ ] Every launch Course has complete Arabic copy.
+- [ ] Every launch Course states audience, outcomes, prerequisites, price, and access policy.
+- [ ] School Courses display relevant school-level information.
+- [ ] General Courses display relevant skill-level information where useful.
+- [ ] Mentor biographies and credentials are approved.
+- [ ] Curriculum order is correct.
+- [ ] Required videos and resources are ready.
+- [ ] Preview content is intentional.
+- [ ] No draft or archived Course is publicly purchasable.
+
+## Authentication and Authorization
+
+- [ ] Registration works.
+- [ ] Email verification works.
+- [ ] Login and logout work.
+- [ ] Password reset works.
+- [ ] One Customer maps to one Learner profile.
+- [ ] Customer and Admin permissions are enforced server-side.
+- [ ] Customers cannot access other Customers' records.
+- [ ] Disabled accounts lose protected access.
+- [ ] Admin accounts are individual and protected.
+
+## Payments
+
+- [ ] Paymob production merchant configuration is approved.
+- [ ] Production callback and return URLs are correct.
+- [ ] Provider secrets are server-only.
+- [ ] Successful payment flow is tested.
+- [ ] Failed payment flow is tested.
+- [ ] Pending payment flow is tested.
+- [ ] Expired payment flow is tested.
+- [ ] Duplicate callbacks are tested.
+- [ ] Delayed callbacks are tested.
+- [ ] Out-of-order callbacks are tested.
+- [ ] Invalid signature is rejected and alerted.
+- [ ] Amount and currency mismatch is rejected.
+- [ ] Browser redirect cannot grant access.
+- [ ] Reconciliation is tested.
+- [ ] Paid Order without Enrollment alert is tested.
+- [ ] Payment status messaging is clear in Arabic.
+
+## Enrollment and Access
+
+- [ ] Successful payment creates exactly one Enrollment.
+- [ ] Default access is 12 calendar months.
+- [ ] Course-specific duration works.
+- [ ] Fixed access end date works.
+- [ ] Existing Enrollment dates do not change when Course policy changes.
+- [ ] Expired Enrollment prevents access.
+- [ ] Revoked Enrollment prevents access.
+- [ ] Manual grant is audited.
+- [ ] Manual revoke and restore are audited.
+- [ ] Duplicate active purchase is prevented.
+
+## Refunds
+
+- [ ] Refund policy is published.
+- [ ] Authorized refund approvers are named internally.
+- [ ] Manual provider refund procedure is documented.
+- [ ] Refund workflow accepts full-Order refunds only.
+- [ ] Refund Record captures amount, reason, reference, Admin, and time.
+- [ ] Refunded Order and Payment states are tested.
+- [ ] Access revocation after refund is tested.
+- [ ] Active playback ends after revocation.
+- [ ] Customer refund confirmation template is ready.
+
+## Video Security
+
+- [ ] VdoCipher production account and domains are configured.
+- [ ] Playback authorization requires active Enrollment.
+- [ ] Tokens are short-lived.
+- [ ] Production token responses are not publicly cached.
+- [ ] Provider secrets never reach the browser.
+- [ ] Dynamic masked watermark is visible.
+- [ ] Watermark exposes no sensitive learner data.
+- [ ] Trusted-device limit works.
+- [ ] Concurrent playback limit works.
+- [ ] Device reset works.
+- [ ] Suspicious authorization activity is logged.
+- [ ] Direct paid-video access without Yosr authorization fails.
+
+## Egypt Playback Pilot
+
+- [ ] Supported Android devices tested.
+- [ ] Supported iPhone/iPad devices tested.
+- [ ] Desktop Chrome tested.
+- [ ] Desktop Safari or supported macOS browser tested.
+- [ ] Home broadband tested.
+- [ ] Major Egyptian mobile networks tested.
+- [ ] Low-bandwidth behavior tested.
+- [ ] Startup and buffering are acceptable.
+- [ ] Quality adaptation is acceptable.
+- [ ] Token refresh is reliable.
+- [ ] Progress survives interrupted connectivity.
+- [ ] Playback failure message includes support route and trace reference.
+- [ ] VdoCipher operating cost is accepted.
+- [ ] Bunny Stream fallback decision is documented if the pilot fails.
+
+## Learning
+
+- [ ] My Courses shows active Courses.
+- [ ] Continue Learning opens the expected Lesson.
+- [ ] Lesson ordering is correct.
+- [ ] Resume position works.
+- [ ] Progress saves periodically.
+- [ ] Seek-to-end does not falsely complete a video.
+- [ ] Required resource completion works where used.
+- [ ] Course progress is correct.
+- [ ] Private resources require authorization.
+- [ ] Expired and revoked states explain support options.
+
+## Admin Operations
+
+- [ ] Admin can manage Categories.
+- [ ] Admin can manage Mentor records.
+- [ ] Admin can create, preview, publish, archive, and update Courses.
+- [ ] Admin can order Sections and Lessons.
+- [ ] Admin can attach and verify video IDs.
+- [ ] Admin can attach private resources.
+- [ ] Admin can find Customer, Order, Payment, and Enrollment records.
+- [ ] Admin can request reconciliation.
+- [ ] Admin can grant, revoke, and restore access.
+- [ ] Admin can record refunds.
+- [ ] Admin can reset devices.
+- [ ] Sensitive actions create audit records.
+- [ ] Operational lists are paginated.
+
+## Arabic, Mobile, and Accessibility
+
+- [ ] Arabic is the default language.
+- [ ] RTL layout works across public and protected pages.
+- [ ] Mixed Arabic, English, numbers, prices, emails, and references render correctly.
+- [ ] Core journeys work at 360px width.
+- [ ] Touch targets are usable.
+- [ ] Forms provide clear Arabic labels and errors.
+- [ ] Keyboard navigation works.
+- [ ] Focus states are visible.
+- [ ] Contrast meets the agreed accessibility target.
+- [ ] Video captions are supported where content provides them.
+- [ ] Reduced-motion preference is respected.
+
+## Security
+
+- [ ] Security review covers identity, payments, enrollments, resources, and playback.
+- [ ] Sensitive endpoints are rate-limited.
+- [ ] CSRF protections are appropriate for mutations.
+- [ ] Security headers and content security policy are active.
+- [ ] Dependencies are scanned.
+- [ ] Secrets are scanned.
+- [ ] Logs contain no credentials, card data, playback tokens, or unnecessary child data.
+- [ ] Preview deployments cannot use production secrets.
+- [ ] Service-role and direct database credentials are server-only.
+- [ ] Data retention and deletion procedures are documented.
+- [ ] Privacy and child-data obligations have local legal review.
+
+## Performance and Scale
+
+- [ ] Runtime database traffic uses suitable connection pooling.
+- [ ] Required indexes are reviewed against production queries.
+- [ ] Public catalog caching works.
+- [ ] Admin and customer lists paginate.
+- [ ] No unbounded high-volume queries are known.
+- [ ] Video delivery bypasses application bandwidth.
+- [ ] Payment callback duration is within provider limits.
+- [ ] Basic load test covers catalog, login, status polling, and playback authorization.
+
+## Monitoring and Recovery
+
+- [ ] Sentry production environment is active.
+- [ ] Structured logs include correlation identifiers.
+- [ ] Alerts exist for failed payment events.
+- [ ] Alerts exist for paid Orders without Enrollment.
+- [ ] Alerts exist for elevated playback authorization failures.
+- [ ] Provider incident contacts are documented.
+- [ ] Database backups are enabled.
+- [ ] Backup restoration has been tested.
+- [ ] Payment reconciliation runbook is tested.
+- [ ] Critical incident runbooks have named owners.
+
+## Support
+
+- [ ] WhatsApp support link works.
+- [ ] Support email works.
+- [ ] Support hours and response expectations are stated.
+- [ ] Safe public Order references appear where needed.
+- [ ] Support can find a Customer from an approved reference.
+- [ ] Payment, access, refund, and device runbooks are rehearsed.
+- [ ] Future chat/chatbot features are not accidentally exposed in MVP.
+
+## Legal and Commercial
+
+- [ ] Terms of use are published.
+- [ ] Privacy policy is published.
+- [ ] Refund policy is published.
+- [ ] Payment and invoicing obligations are reviewed.
+- [ ] Mentor content rights and agreements are complete.
+- [ ] Course claims and credentials are approved.
+- [ ] Data processing and cross-border provider use are reviewed.
+
+## Final Go/No-Go
+
+- [ ] All blocking defects are closed.
+- [ ] Production deployment is tagged and recoverable.
+- [ ] Admin operators have completed a full rehearsal.
+- [ ] A real end-to-end purchase has been tested with controlled production credentials.
+- [ ] A Learner can purchase, receive access, watch, resume, and complete a Course.
+- [ ] Launch owner records the final go decision.
