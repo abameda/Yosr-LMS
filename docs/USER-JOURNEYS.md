@@ -64,9 +64,9 @@ The course detail page presents:
 1. The Customer selects Buy on a published course.
 2. Yosr requires authentication and verified email.
 3. Yosr confirms the course, Learner, price, and access terms.
-4. The server creates an Order and Paymob Payment Attempt.
-5. The Customer is redirected to Paymob hosted checkout.
-6. Paymob returns the Customer to a Yosr payment-status page.
+4. The server creates an Order and a Payment Attempt for the selected provider.
+5. The Customer is redirected to the selected provider's hosted checkout.
+6. The provider returns the Customer to a Yosr payment-status page.
 7. The page displays pending until Yosr has processed a verified provider event.
 
 **Outcomes:**
@@ -79,7 +79,7 @@ The course detail page presents:
 
 **Actor:** System
 
-1. Paymob sends a callback/webhook.
+1. The selected payment provider sends a callback/webhook.
 2. Yosr verifies authenticity and provider references.
 3. Yosr stores the event idempotently.
 4. Yosr updates the Payment Attempt.
@@ -114,7 +114,7 @@ The course detail page presents:
 
 1. The learning page requests playback authorization.
 2. The server verifies session, role, Enrollment, Course, and Lesson.
-3. The server requests a short-lived VdoCipher playback authorization.
+3. The server requests a short-lived authorization from the selected video provider.
 4. The player displays a viewer-specific moving watermark.
 5. Playback events update resume position and covered viewing time.
 6. The system marks the lesson complete when completion rules are satisfied.
@@ -132,7 +132,7 @@ The course detail page presents:
 
 1. The Learner selects a course resource.
 2. The server verifies active Enrollment and lesson visibility.
-3. Yosr generates a short-lived signed resource URL.
+3. Yosr generates a short-lived signed Cloudflare R2 resource URL.
 4. The Learner downloads or opens the resource.
 
 Public permanent storage links are not used for paid resources.
@@ -146,7 +146,7 @@ Public permanent storage links are not used for paid resources.
 3. The Admin creates the Course as Draft.
 4. The Admin enters audience, outcome, pricing, and access-policy information.
 5. The Admin creates Sections and ordered Lessons.
-6. The Admin attaches VdoCipher video IDs and private resources.
+6. The Admin attaches selected-provider video IDs and Cloudflare R2-backed private resources.
 7. The Admin verifies that required videos are ready.
 8. The Admin previews the course.
 9. The Admin publishes the Course.

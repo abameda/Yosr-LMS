@@ -36,6 +36,7 @@ The MVP is a curated course-selling and learning platform. A feature belongs in 
 - Course sections.
 - Video lessons.
 - Resource lessons or downloadable lesson resources.
+- Course images, thumbnails, PDFs, attachments, and uploaded assets stored in Cloudflare R2.
 - Ordered curriculum.
 - Draft, published, and archived course states.
 - Configurable access policy per course.
@@ -47,7 +48,7 @@ The MVP is a curated course-selling and learning platform. A feature belongs in 
 - Server-authoritative prices.
 - Provider-neutral orders.
 - Provider-aware payment attempts and events.
-- Paymob hosted checkout.
+- Hosted checkout through the approved payment provider; Paymob is the current candidate pending contracting and readiness approval.
 - Pending, asynchronous, expired, failed, successful, and refunded payment states.
 - Verified webhook/callback handling.
 - Idempotent enrollment creation.
@@ -62,7 +63,7 @@ The MVP is a curated course-selling and learning platform. A feature belongs in 
 - My Courses.
 - Continue Learning.
 - Enrollment-gated course access.
-- Secure VdoCipher playback.
+- Secure playback through a future selected video provider.
 - Lesson navigation.
 - Resume position.
 - Lesson progress.
@@ -78,7 +79,7 @@ The MVP is a curated course-selling and learning platform. A feature belongs in 
 - Mentor record management.
 - Course creation and editing.
 - Section and lesson ordering.
-- VdoCipher video ID attachment and readiness status.
+- Selected-provider video ID attachment and readiness status.
 - Resource attachment.
 - Course publication and archival.
 - Customer and Learner lookup.
@@ -97,6 +98,7 @@ The MVP is a curated course-selling and learning platform. A feature belongs in 
 - Appropriate database indexes.
 - Public catalog caching and revalidation.
 - Server-side authorization.
+- Cloudflare R2 public asset delivery and private signed resource access.
 - Secret separation between runtime and administrative access.
 - Egypt playback pilot before production launch.
 
@@ -137,14 +139,14 @@ Launch with a small set of complete, high-quality courses. The data model may su
 
 ## Payment Provider Boundary
 
-Paymob is required for launch. Fawry is a planned provider, not an automatic MVP commitment. Fawry enters the launch scope only if:
+No payment provider is assumed to be contracted during the foundation stages. Paymob is the current first-provider candidate and becomes a launch dependency only after contracting and readiness approval. Fawry is a planned provider, not an automatic MVP commitment. Fawry enters the launch scope only if:
 
 - Credentials and merchant configuration are ready.
 - Sandbox and production callbacks are validated.
 - Pending and expiry support is operationally tested.
 - Reconciliation and customer instructions are documented.
-- Adding it does not delay the core Paymob launch.
+- Adding it does not delay the first-provider launch.
 
 ## Definition of MVP Complete
 
-The MVP is complete when an Admin can publish a course, a Customer can pay through Paymob, a verified payment creates one valid enrollment, the Learner can securely watch and resume lessons, and the Admin can resolve payment, access, refund, and device-support cases.
+The MVP is complete when an Admin can publish a course, a Customer can pay through the approved payment provider, a verified payment creates one valid enrollment, the Learner can securely watch and resume lessons through the selected video provider, and the Admin can resolve payment, access, refund, and device-support cases.

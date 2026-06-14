@@ -2,7 +2,9 @@
 
 ## Purpose
 
-Define a reliable, provider-aware payment flow that implements Paymob first and can add Fawry without changing Order, Enrollment, or learning behavior.
+Define a reliable, provider-aware payment flow with Paymob as the current first-provider candidate and Fawry as a possible later adapter, without changing Order, Enrollment, or learning behavior.
+
+No payment provider is assumed to be contracted. Provider-specific implementation begins only after the Stage 5 commercial and technical readiness gate passes.
 
 ## Principles
 
@@ -48,7 +50,7 @@ Core Order and Enrollment services do not parse Paymob- or Fawry-specific payloa
 
 State transitions must be monotonic unless a provider documents a corrective event. A succeeded payment cannot become failed because an older callback arrives.
 
-## Paymob Checkout Flow
+## Paymob Candidate Checkout Flow
 
 1. The Customer selects a published Course.
 2. The server confirms:
@@ -237,7 +239,7 @@ Track:
 
 ## Acceptance Criteria
 
-- A successful Paymob callback creates exactly one Enrollment.
+- If Paymob is selected, a successful verified callback creates exactly one Enrollment.
 - Duplicate callbacks produce no duplicate Order, Payment, or Enrollment effects.
 - A success redirect without a successful provider event grants no access.
 - Amount or currency mismatch grants no access and creates an alert.

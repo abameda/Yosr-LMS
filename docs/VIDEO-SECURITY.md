@@ -6,16 +6,19 @@ Provide practical protection for paid video lessons while preserving reliable pl
 
 ## Provider Decision
 
-VdoCipher is the primary MVP provider because it combines:
+No video provider is selected or assumed to be contracted during the foundation stages. Video hosting remains behind a provider-neutral application boundary and is implemented only when the secure-video stage begins.
 
-- DRM-backed playback.
-- Short-lived playback authorization.
-- Viewer-specific dynamic watermarking.
+The selected provider must be evaluated for:
+
+- Protected playback and practical download deterrence.
+- Short-lived server-authorized playback.
+- Viewer-specific watermarking or an approved equivalent.
 - Domain and playback policy controls.
 - Player events for progress tracking.
-- Viewer and playback analytics useful for support.
+- Playback analytics useful for support.
+- Reliability and operating cost for learners in Egypt.
 
-An Egypt playback pilot is a production launch gate. Bunny Stream remains the fallback when VdoCipher cost or playback quality is unacceptable for the target audience.
+VdoCipher, Bunny Stream, or another provider may be evaluated later. Selection, contracting, credentials, SDK installation, and integration are deferred until the Stage 4 readiness gate.
 
 ## Threat Model
 
@@ -50,7 +53,7 @@ The security promise is controlled access and practical deterrence, not perfect 
    - Active, unexpired Enrollment.
    - Device is not revoked or blocked.
    - Concurrent playback policy.
-4. The server requests a VdoCipher OTP/playback authorization.
+4. The server requests short-lived authorization through the selected provider adapter.
 5. The server returns only the short-lived data required by the player.
 6. The provider delivers the video through its CDN.
 
@@ -189,7 +192,7 @@ Pilot success requires:
 - Progress events remain reliable under interrupted connectivity.
 - Monthly cost remains within the approved operating forecast.
 
-If the pilot fails materially, evaluate Bunny Stream using the same lesson, networks, and device matrix before changing provider.
+If the pilot fails materially, evaluate another candidate using the same lesson, networks, and device matrix before changing the approved provider decision.
 
 ## Provider Portability
 
@@ -201,7 +204,9 @@ The application stores:
 - Internal Lesson relationship.
 - Security profile version.
 
-Learning pages and Enrollment logic depend on an internal playback-authorization interface, not VdoCipher payload shapes. This permits a later provider migration without pretending providers are functionally identical.
+Learning pages and Enrollment logic depend on an internal playback-authorization interface, not provider payload shapes. This permits a later provider migration without pretending providers are functionally identical.
+
+Cloudflare R2 is not the video-hosting provider. R2 stores non-video course assets; video bytes remain with the selected video provider.
 
 ## Security and Privacy
 

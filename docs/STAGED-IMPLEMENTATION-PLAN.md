@@ -17,11 +17,11 @@ This is a delivery roadmap, not an execution-level coding plan. Before each stag
 - Use small commits aligned to one behavior.
 - Do not implement deferred features as "future-proofing."
 
-## Stage 0: Project Standards and Provider Validation
+## Stage 0: Project Standards and Provider Strategy
 
 ### Goal
 
-Prepare an implementation environment with clear conventions and validate external assumptions before product development.
+Prepare an implementation environment with clear conventions and record provider boundaries before product development.
 
 ### Deliverables
 
@@ -30,8 +30,9 @@ Prepare an implementation environment with clear conventions and validate extern
 - Formatting, linting, type-checking, and testing standards.
 - Continuous integration quality gates.
 - Supabase development and production strategy.
-- Paymob sandbox merchant access.
-- VdoCipher development access.
+- Written Cloudflare R2 storage strategy.
+- Written payment-provider strategy; no contract or merchant access is required yet.
+- Written future video-provider strategy; no subscription or provider access is required yet.
 - Transactional email provider choice.
 - Sentry project setup plan.
 - Written data-handling and log-redaction rules.
@@ -40,7 +41,8 @@ Prepare an implementation environment with clear conventions and validate extern
 
 - Developers can run the empty application and test suite.
 - Preview and production secrets are separated.
-- Provider credentials and callback domains are understood.
+- Supabase is limited to PostgreSQL and Auth; Cloudflare R2 is selected for non-video object storage.
+- Missing R2, payment-provider, or video-provider access does not block Stage 0 or Stage 1.
 - No product feature code is required to complete this stage.
 
 ## Stage 1: Application Foundation and Identity
@@ -77,6 +79,10 @@ Identity and role boundaries work in preview with no direct browser access to pr
 
 ## Stage 2: Catalog and Admin Content Operations
 
+### Entry Gate
+
+Cloudflare R2 development access, non-production bucket configuration, and credential ownership are approved before asset upload implementation begins.
+
 ### Goal
 
 Allow Admins to create and publish a flexible course catalog.
@@ -89,6 +95,7 @@ Allow Admins to create and publish a flexible course catalog.
 - Optional school and skill metadata.
 - Access-policy configuration with 12-month default.
 - Sections, Lessons, Videos, and Resources metadata.
+- Cloudflare R2 integration for course images, thumbnails, and uploaded non-video assets.
 - Admin course editor and ordering.
 - Publication validation.
 - Public course listing and detail pages.
@@ -102,6 +109,7 @@ Allow Admins to create and publish a flexible course catalog.
 - Draft and archived Courses are not purchasable.
 - Course price and access policy validate before publication.
 - Public cache revalidates after publication changes.
+- Course images and thumbnails are stored in R2, not Supabase Storage or Buckets.
 
 ### Exit Criteria
 
@@ -121,7 +129,7 @@ Build the complete protected learning journey using audited manual Enrollment gr
 - My Courses.
 - Course learning page.
 - Lesson navigation.
-- Private resource authorization.
+- Private R2 resource authorization for PDFs and attachments.
 - Lesson progress and completion.
 - Course completion calculation.
 - Expired and revoked access states.
@@ -133,6 +141,7 @@ Build the complete protected learning journey using audited manual Enrollment gr
 - Course edits do not change existing Enrollment dates.
 - A Learner cannot access another Learner's progress.
 - Resource links require current authorization.
+- Private R2 objects are delivered through short-lived signed URLs.
 - Duplicate grants do not create duplicate Enrollments.
 - Completion rules resist seek-to-end behavior at the domain level.
 
@@ -142,9 +151,13 @@ An Admin can grant access and a Customer can complete the learning journey witho
 
 ## Stage 4: Secure Video Playback
 
+### Entry Gate
+
+A video provider has been selected, commercial and technical readiness are approved, development access is available, and playback-domain requirements are validated.
+
 ### Goal
 
-Integrate VdoCipher behind the internal media boundary.
+Integrate the selected video provider behind the internal media boundary.
 
 ### Deliverables
 
@@ -171,9 +184,13 @@ Integrate VdoCipher behind the internal media boundary.
 
 ### Exit Criteria
 
-The learning journey uses protected VdoCipher playback and supports observable failures.
+The learning journey uses protected provider-backed playback and supports observable failures.
 
-## Stage 5: Orders and Paymob
+## Stage 5: Orders and Payment Provider
+
+### Entry Gate
+
+A payment provider has been selected and contracted, sandbox merchant access is active, and callback and domain requirements are documented and validated. Paymob remains the current candidate, not an assumed contract.
 
 ### Goal
 
@@ -184,9 +201,9 @@ Implement a reliable paid enrollment flow.
 - Orders and one-item Order records.
 - Provider-aware Payment Attempts.
 - Payment Events.
-- Paymob hosted checkout creation.
+- Selected-provider hosted checkout creation.
 - Payment-status page.
-- Verified Paymob callback/webhook.
+- Verified provider callback/webhook.
 - Transactional payment-to-enrollment flow.
 - Retry-safe event processing.
 - Scheduled and manual reconciliation.
@@ -205,7 +222,7 @@ Implement a reliable paid enrollment flow.
 
 ### Exit Criteria
 
-A Paymob sandbox purchase reliably creates access once and can recover from delayed or repeated callbacks.
+A sandbox purchase through the selected provider reliably creates access once and can recover from delayed or repeated callbacks.
 
 ## Stage 6: Refunds, Support, and Operational Hardening
 
@@ -278,8 +295,8 @@ Validate the complete production-like experience with a small controlled audienc
 
 ### Deliverables
 
-- VdoCipher device/network pilot.
-- Paymob production-like end-to-end payment tests.
+- Selected video-provider device/network pilot.
+- Selected payment-provider production-like end-to-end tests.
 - Callback timing and reconciliation observations.
 - Video cost estimate from measured watch time.
 - Support response rehearsal.
@@ -298,7 +315,7 @@ Validate the complete production-like experience with a small controlled audienc
 
 ### Entry Condition
 
-Start only when Paymob is stable and Fawry is commercially required for launch or the first post-launch increment.
+Start only when the first payment provider is stable and Fawry is commercially required for launch or the first post-launch increment.
 
 ### Deliverables
 
@@ -315,7 +332,7 @@ Start only when Paymob is stable and Fawry is commercially required for launch o
 - Paid notification creates access exactly once.
 - Expired references remain historical.
 - Reconciliation recovers missed notification.
-- Paymob behavior is unchanged.
+- First-provider behavior is unchanged.
 
 ## AI-Assisted Task Format
 
@@ -342,7 +359,7 @@ Human review is mandatory before merging:
 - Payment signature verification and state transitions.
 - Enrollment date calculations.
 - Refund and manual grant behavior.
-- VdoCipher token generation.
+- Video-provider playback authorization.
 - Device/session enforcement.
 - Environment and secret configuration.
 - New dependencies.

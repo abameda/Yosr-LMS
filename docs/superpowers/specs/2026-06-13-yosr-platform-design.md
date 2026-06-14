@@ -19,16 +19,18 @@ The MVP is an Admin-operated academy, not a marketplace. Customers discover and 
 - Email/password authentication with verification and password reset.
 - Data-driven Course Categories.
 - Optional school and general-skill metadata.
-- Paymob hosted checkout first.
+- Paymob as the current first-payment candidate, pending contracting and readiness approval.
 - Provider-aware payment architecture for future Fawry.
-- VdoCipher primary video provider after an Egypt pilot.
-- Bunny Stream fallback if cost or playback quality requires it.
+- Cloudflare R2 for course images, thumbnails, PDFs, attachments, and uploaded assets.
+- Future provider-neutral video hosting selected only after commercial and Egypt-pilot readiness review.
 - WhatsApp and email support only in MVP.
 - No marketplace, mentor dashboard, payouts, family accounts, cart, subscriptions, quizzes, live chat, chatbot, or advanced analytics.
 
 ## Architecture
 
-Use a stateless Next.js modular monolith on Vercel with TypeScript, Tailwind CSS, shadcn/ui, Supabase PostgreSQL/Auth/Storage, Prisma, VdoCipher, Paymob, transactional email, and Sentry.
+Use a stateless Next.js modular monolith on Vercel with TypeScript, Tailwind CSS, shadcn/ui, Supabase PostgreSQL/Auth, Cloudflare R2, Prisma, provider-aware payment and future video boundaries, transactional email, and Sentry.
+
+Supabase Storage/Buckets are not used. R2 stores non-video course assets; video bytes remain with a future selected video provider.
 
 Modules:
 
@@ -48,7 +50,7 @@ The browser does not directly access commerce or learning tables. Server-side se
 ### Purchase
 
 1. Customer selects a published Course.
-2. Server creates a provider-neutral Order and Paymob Payment Attempt.
+2. Server creates a provider-neutral Order and provider-specific Payment Attempt.
 3. Customer completes hosted checkout.
 4. Verified provider event is stored idempotently.
 5. A transaction marks Payment succeeded, Order paid, and creates one Enrollment.
@@ -58,7 +60,7 @@ The browser does not directly access commerce or learning tables. Server-side se
 
 1. Customer opens an enrolled Course.
 2. Server verifies active Enrollment.
-3. Server creates short-lived VdoCipher authorization.
+3. Server creates short-lived authorization through the selected video-provider adapter.
 4. Player events update progress.
 5. Required Lesson completion determines Course progress.
 
@@ -79,6 +81,7 @@ The browser does not directly access commerce or learning tables. Server-side se
 - Runtime database traffic uses serverless-compatible pooling.
 - Lists are paginated.
 - Video is delivered by the provider CDN.
+- Course images, thumbnails, PDFs, attachments, and uploaded assets are stored in Cloudflare R2.
 - Structured logs, Sentry, reconciliation, backups, and runbooks are MVP requirements.
 
 ## Security
@@ -90,7 +93,7 @@ The browser does not directly access commerce or learning tables. Server-side se
 - Production domain restrictions.
 - Masked viewer-specific watermark.
 - Three trusted devices and one concurrent playback session.
-- Private signed resources.
+- Private R2 resources delivered through short-lived signed URLs.
 - Rate limits and audit records for sensitive operations.
 - Minimal collection of learner and device data.
 
