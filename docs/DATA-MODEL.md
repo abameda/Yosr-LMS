@@ -82,7 +82,7 @@ Important attributes:
 - Arabic display name.
 - Biography.
 - Credentials.
-- Profile image.
+- Profile image R2 object key.
 - Optional public links.
 - Active state.
 
@@ -99,7 +99,7 @@ Important attributes:
 - Audience description.
 - Optional school-level label.
 - Optional general skill level.
-- Thumbnail and optional trailer reference.
+- Thumbnail R2 object key and optional trailer reference.
 - Current price and currency.
 - Draft, published, or archived state.
 - Access policy type.
@@ -165,7 +165,7 @@ Important attributes:
 - External video identifier.
 - Processing state.
 - Duration.
-- Optional poster reference.
+- Optional poster R2 object key.
 - Security profile version.
 
 Constraints:
@@ -178,7 +178,7 @@ Constraints:
 Important attributes:
 
 - Lesson.
-- Private storage object path.
+- Private Cloudflare R2 object key.
 - Display label.
 - MIME type.
 - File size.
@@ -233,7 +233,7 @@ Represents one attempt to pay an Order.
 Important attributes:
 
 - Order.
-- Provider: Paymob or future Fawry.
+- Provider: the selected first provider, with Paymob and Fawry as current candidates.
 - Initiated, pending, succeeded, failed, expired, or refunded state.
 - Provider intention/payment/reference identifiers.
 - Local checkout-creation idempotency key.

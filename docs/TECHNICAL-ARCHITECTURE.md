@@ -14,9 +14,9 @@ The MVP should not use microservices. Scale is achieved first through stateless 
 - **Database:** Supabase PostgreSQL.
 - **ORM and migrations:** Prisma.
 - **Authentication:** Supabase Auth.
-- **Private resource storage:** Supabase Storage.
-- **Video:** VdoCipher.
-- **Payments:** Paymob first; Fawry-compatible provider boundary.
+- **Object storage:** Cloudflare R2 for course images, thumbnails, PDFs, attachments, and uploaded assets.
+- **Video:** Future provider abstraction; no provider is selected or implemented during the foundation stages.
+- **Payments:** Provider-aware boundary; Paymob is the current first-provider candidate pending contracting and readiness approval.
 - **Hosting:** Vercel.
 - **Transactional email:** A dedicated email provider such as Resend or Postmark.
 - **Error monitoring:** Sentry.
@@ -45,7 +45,7 @@ Yosr is one deployable application with bounded modules:
 
 - Orders and order items.
 - Payment attempts and provider events.
-- Paymob integration.
+- Approved payment-provider integration.
 - Future Fawry adapter.
 - Refund records and reconciliation.
 
@@ -66,9 +66,9 @@ Yosr is one deployable application with bounded modules:
 ### Media
 
 - Provider-neutral video records.
-- VdoCipher playback authorization.
+- Selected-provider playback authorization in a future video stage.
 - Playback sessions.
-- Private resource authorization.
+- Cloudflare R2 asset and private-resource authorization.
 
 ### Administration
 
@@ -98,7 +98,10 @@ Business rules belong in domain services, not UI components or route handlers. R
 - Prisma accesses Postgres from server-side application code.
 - Supabase Auth provides identity; application services enforce authorization.
 - Supabase service-role credentials remain server-only.
-- Private storage objects are delivered through short-lived signed URLs after authorization.
+- Supabase Storage and Supabase Buckets are not used.
+- R2 credentials remain server-only.
+- Public course images and thumbnails use R2-backed CDN delivery.
+- Private PDFs, attachments, and paid resources are delivered through short-lived R2 signed URLs after authorization.
 - Runtime database traffic uses Supabase connection pooling.
 - Migration and administrative operations use a direct database connection.
 
@@ -144,8 +147,10 @@ Client-provided role, price, payment status, course ownership, or access dates a
 ### Video and Files
 
 - Video bytes are delivered by the video provider CDN, not Vercel.
-- Public images use optimized CDN delivery.
-- Paid resources use private storage and short-lived signed URLs.
+- Video bytes are not stored in R2 under the application asset-storage strategy.
+- Course images, thumbnails, PDFs, attachments, and uploaded assets use Cloudflare R2.
+- Public images use optimized R2-backed CDN delivery.
+- Paid resources use private R2 objects and short-lived signed URLs.
 
 ### Growth Path
 
@@ -155,7 +160,7 @@ If volume requires it, the current module boundaries allow:
 - Moving reconciliation to a dedicated worker.
 - Adding read replicas or a separate analytics store.
 - Extracting payment or media integration services.
-- Replacing Supabase Auth or Storage behind existing boundaries.
+- Replacing Supabase Auth, R2, or the selected video provider behind existing boundaries.
 
 These are migration options, not MVP infrastructure.
 
@@ -200,9 +205,9 @@ Each environment must have separate:
 
 - Supabase project or isolated database configuration.
 - Auth redirect URLs.
-- Storage buckets.
-- Paymob credentials and callback URLs.
-- VdoCipher credentials and domain settings.
+- R2 buckets or isolated prefixes, credentials, and public asset domains once the storage stage begins.
+- Payment-provider credentials and callback URLs only after a provider is contracted and its readiness gate passes.
+- Video-provider credentials and domain settings only after a provider is selected and its readiness gate passes.
 - Email configuration.
 - Sentry environment.
 

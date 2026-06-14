@@ -29,7 +29,7 @@ Launch requires every blocking item to be complete or explicitly waived by the r
 
 ## Payments
 
-- [ ] Paymob production merchant configuration is approved.
+- [ ] The selected payment provider is contracted and its production merchant configuration is approved.
 - [ ] Production callback and return URLs are correct.
 - [ ] Provider secrets are server-only.
 - [ ] Successful payment flow is tested.
@@ -73,7 +73,7 @@ Launch requires every blocking item to be complete or explicitly waived by the r
 
 ## Video Security
 
-- [ ] VdoCipher production account and domains are configured.
+- [ ] The selected video-provider production account and domains are configured.
 - [ ] Playback authorization requires active Enrollment.
 - [ ] Tokens are short-lived.
 - [ ] Production token responses are not publicly cached.
@@ -100,8 +100,8 @@ Launch requires every blocking item to be complete or explicitly waived by the r
 - [ ] Token refresh is reliable.
 - [ ] Progress survives interrupted connectivity.
 - [ ] Playback failure message includes support route and trace reference.
-- [ ] VdoCipher operating cost is accepted.
-- [ ] Bunny Stream fallback decision is documented if the pilot fails.
+- [ ] Selected video-provider operating cost is accepted.
+- [ ] Replacement-provider decision is documented if the pilot fails.
 
 ## Learning
 
@@ -113,7 +113,7 @@ Launch requires every blocking item to be complete or explicitly waived by the r
 - [ ] Seek-to-end does not falsely complete a video.
 - [ ] Required resource completion works where used.
 - [ ] Course progress is correct.
-- [ ] Private resources require authorization.
+- [ ] Private Cloudflare R2 resources require authorization and short-lived signed URLs.
 - [ ] Expired and revoked states explain support options.
 
 ## Admin Operations
@@ -123,7 +123,8 @@ Launch requires every blocking item to be complete or explicitly waived by the r
 - [ ] Admin can create, preview, publish, archive, and update Courses.
 - [ ] Admin can order Sections and Lessons.
 - [ ] Admin can attach and verify video IDs.
-- [ ] Admin can attach private resources.
+- [ ] Admin can upload course images, thumbnails, PDFs, attachments, and other non-video assets to Cloudflare R2.
+- [ ] Admin can attach private R2 resources.
 - [ ] Admin can find Customer, Order, Payment, and Enrollment records.
 - [ ] Admin can request reconciliation.
 - [ ] Admin can grant, revoke, and restore access.
@@ -157,6 +158,7 @@ Launch requires every blocking item to be complete or explicitly waived by the r
 - [ ] Logs contain no credentials, card data, playback tokens, or unnecessary child data.
 - [ ] Preview deployments cannot use production secrets.
 - [ ] Service-role and direct database credentials are server-only.
+- [ ] R2 credentials are server-only and Supabase Storage/Buckets are not configured.
 - [ ] Data retention and deletion procedures are documented.
 - [ ] Privacy and child-data obligations have local legal review.
 
@@ -168,6 +170,7 @@ Launch requires every blocking item to be complete or explicitly waived by the r
 - [ ] Admin and customer lists paginate.
 - [ ] No unbounded high-volume queries are known.
 - [ ] Video delivery bypasses application bandwidth.
+- [ ] Public and private non-video asset delivery uses Cloudflare R2.
 - [ ] Payment callback duration is within provider limits.
 - [ ] Basic load test covers catalog, login, status polling, and playback authorization.
 

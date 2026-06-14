@@ -68,12 +68,12 @@ A public content record associated with courses. Mentors do not authenticate, up
 - Phone/OTP authentication is deferred.
 - Course access is configurable per course.
 - Default access is 12 calendar months after successful purchase.
-- Paymob hosted checkout is the first payment integration.
+- Paymob is the current first-payment candidate, but integration starts only after contracting and readiness are approved.
 - Payment records are provider-aware so Fawry can be added without restructuring orders or enrollments.
 - Full-Order refunds are handled manually in the MVP.
 - A confirmed refund can revoke course access.
-- VdoCipher is the primary video provider, subject to an Egypt playback pilot.
-- Bunny Stream is the fallback when cost outweighs stronger protection.
+- Cloudflare R2 is the main non-video storage provider for course images, thumbnails, PDFs, attachments, and uploaded assets.
+- Video hosting remains a future provider abstraction. VdoCipher, Bunny Stream, or another provider may be evaluated later; none is assumed to be contracted.
 - WhatsApp and email are the MVP support channels.
 - Live chat, chatbot, AI support, and helpdesk integrations are future capabilities only.
 

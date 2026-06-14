@@ -9,7 +9,7 @@ Yosr needs production reliability and future scale, but a small team should not 
 
 ## Decision
 
-Build one stateless Next.js application organized into bounded modules and deploy it on Vercel. Use managed Postgres, authentication, storage, video delivery, email, and monitoring services.
+Build one stateless Next.js application organized into bounded modules and deploy it on Vercel. Use managed Postgres and authentication from Supabase, Cloudflare R2 for non-video object storage, and managed email and monitoring services. Keep video delivery behind a future provider abstraction until a provider is selected and approved.
 
 Do not begin with microservices.
 

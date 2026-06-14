@@ -1,0 +1,12 @@
+.next
+node_modules
+out
+build
+coverage
+playwright-report
+test-results
+# Existing product documentation is outside Task 0.3 formatting scope.
+docs
+package-lock.json
+next-env.d.ts
+*.tsbuildinfo

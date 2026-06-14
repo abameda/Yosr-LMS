@@ -95,11 +95,12 @@ Mentors do not receive accounts, upload access, analytics, payouts, or student i
 ## Video and Resource Operations
 
 - Upload source video through the approved provider process.
-- Record the VdoCipher video ID.
+- Record the selected provider's video ID.
 - Confirm processing state and duration.
 - Test secure playback from a Customer account with an Enrollment.
 - Verify watermark and progress events.
-- Store paid resources in private storage.
+- Store course images, thumbnails, PDFs, attachments, and uploaded assets in Cloudflare R2.
+- Keep paid resources private and issue only authorized short-lived signed URLs.
 - Confirm resource MIME type, size, label, and access.
 - Do not expose source video or private resource URLs.
 
@@ -219,7 +220,7 @@ Maintain simple runbooks for:
 - Checkout creation failure.
 - Delayed or invalid webhook.
 - Paid Order without Enrollment.
-- VdoCipher outage or playback failure.
+- Selected video-provider outage or playback failure.
 - Progress not saving.
 - Unexpected access expiry.
 - Suspected account sharing.
