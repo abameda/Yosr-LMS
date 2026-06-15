@@ -142,7 +142,23 @@ describe("database import boundary", () => {
         `${path.relative(sourceRoot, current)} is reachable from a Client Component`,
       ).toBe(false);
 
-      const { specifiers } = await sourceImports(current);
+      const { source, specifiers } = await sourceImports(current);
+      const parsed = ts.createSourceFile(
+        current,
+        source,
+        ts.ScriptTarget.Latest,
+        true,
+      );
+      const firstStatement = parsed.statements[0];
+      const isServerActionBoundary =
+        firstStatement &&
+        ts.isExpressionStatement(firstStatement) &&
+        ts.isStringLiteral(firstStatement.expression) &&
+        firstStatement.expression.text === "use server";
+
+      if (isServerActionBoundary) {
+        continue;
+      }
 
       for (const specifier of specifiers) {
         const candidates = resolveSourceImport(current, specifier);
