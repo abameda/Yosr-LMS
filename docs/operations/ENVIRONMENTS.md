@@ -45,6 +45,243 @@ isolation boundary. If that topology changes, a human security review must
 prove that the Preview target and branch overrides cannot resolve any production
 credential before the change is accepted.
 
+## Supabase Development Operating Strategy
+
+Docker-backed local Supabase is the preferred Stage 1 environment. A dedicated
+cloud-development project is the approved fallback when a Docker-compatible
+runtime is unavailable. Both paths provide isolated Supabase Auth and Postgres;
+neither path may use Preview, staging, or production as a developer scratch
+environment.
+
+### Preferred Path: Local Supabase
+
+The repository pins the Supabase CLI as an npm development dependency. Use the
+npm scripts so every developer runs the repository version. Start and inspect
+the local stack first:
+
+```powershell
+npm ci
+npm run supabase:start
+npm run supabase:status
+```
+
+The equivalent acceptance commands are `npx supabase start` and
+`npx supabase status`. The local stack requires Docker Desktop or another
+Docker-compatible runtime with a running daemon.
+
+Supabase CLI and Docker may publish the Auth, database, Mailpit, and pooler
+ports on host interfaces rather than enforce loopback-only binding. Run this
+stack only on a trusted development network or on a host whose firewall blocks
+inbound access to the configured ports. Treat all reported local keys and
+passwords as shared development credentials, not as secrets suitable for remote
+access or production use. Stop the stack after use as required below.
+
+The tracked `supabase/config.toml` enables only the local services needed for
+Stage 1:
+
+| Service | Local address | Purpose |
+| --- | --- | --- |
+| Supabase Auth gateway | `http://localhost:54321` | Base URL for local Auth routes such as `/auth/v1`; it is not a general Data API endpoint. |
+| PostgreSQL direct connection | `localhost:54322` | `DIRECT_URL` and migration or administrative access. |
+| PostgreSQL transaction pooler | `localhost:54329` | Runtime `DATABASE_URL`. |
+| Mailpit | `http://localhost:54324` | Captures local Auth confirmation and recovery email; it does not deliver mail externally. |
+
+After startup, use `npm run supabase:status` to confirm the running services and
+obtain generated local keys and database details. Put the resulting values only
+in untracked `.env.local`:
+
+- `APP_ENV=local` and `APP_URL=http://localhost:3000`.
+- `NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321` points to the tracked local
+  Auth gateway. Do not treat this base URL as a generic API surface.
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` receives the reported browser-safe
+  local publishable key.
+- `DATABASE_URL` derives from the reported direct database URL but uses port
+  `54329`, the tenant-qualified local user `postgres.pooler-dev`, and
+  `sslmode=disable`. Keep the password reported by the local CLI.
+- `DIRECT_URL` uses the direct local database endpoint on port `54322`.
+- `SHADOW_DATABASE_URL` is not required for the local path; the CLI-managed
+  shadow database uses the configured local shadow port.
+
+Start the Next.js application at `http://localhost:3000`. To check local Auth
+email, create a disposable local user or request a password reset, then confirm
+that the message appears in Mailpit and that its link returns only to an allowed
+`http://localhost:3000` path. Do not configure external SMTP for this check.
+
+After the application, Auth, redirect, and Mailpit checks are complete, stop the
+local stack as the final teardown step:
+
+```powershell
+npm run supabase:stop
+```
+
+The equivalent teardown command is `npx supabase stop`.
+
+The browser-facing Data API, PostgREST, and GraphQL endpoint are disabled in the
+tracked local configuration for this Stage 0/1 foundation. Storage, Buckets,
+Realtime, Studio, Analytics, and Edge Functions are also disabled because they
+are outside the Stage 0/1 boundary.
+
+### Approved Fallback: Cloud Development
+
+Docker absence must not block Stage 1 when the platform owner has provisioned
+both of these non-production resources:
+
+1. One dedicated Supabase development project for application Auth and
+   PostgreSQL.
+2. One separate, disposable PostgreSQL shadow database. Prefer a second
+   development-only Supabase project so its project identity is unambiguous.
+
+The two resources must not be a staging or production project, must contain
+only synthetic data, and must not share credentials with Preview, staging, or
+production. Store owner-issued values in untracked `.env.local` with
+`APP_ENV=cloud-development`:
+
+- Use the development project's URL and publishable key for
+  `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+- Use the development project's transaction pooler connection for the runtime
+  `DATABASE_URL`.
+- For `DIRECT_URL`, use the development project's direct database endpoint when
+  the developer network has IPv6 connectivity or the project has the Supabase
+  IPv4 add-on. On an IPv4-only network without that add-on, use the development
+  project's Shared Pooler in session mode on port `5432`.
+- Apply the same network-dependent choice to `SHADOW_DATABASE_URL` for the
+  separate shadow resource: its direct endpoint with IPv6 or the IPv4 add-on,
+  otherwise its Shared Pooler session-mode endpoint on port `5432`.
+- Add `SUPABASE_SECRET_KEY` only when an implemented server-only operation
+  requires it. Never expose it to browser code or prefix it with
+  `NEXT_PUBLIC_`.
+
+The direct database endpoint is IPv6 unless the project has the IPv4 add-on.
+The Shared Pooler session-mode connection is the approved migration and
+administrative alternative for IPv4-only developer networks. Do not substitute
+transaction mode for `DIRECT_URL` or `SHADOW_DATABASE_URL`.
+
+The verified local stack runs PostgreSQL `17.6`, and the tracked
+`supabase/config.toml` therefore sets `db.major_version = 17`. Before selecting
+or linking a cloud-development project, obtain the PostgreSQL major version
+through each candidate `DATABASE_URL`, `DIRECT_URL`, and `SHADOW_DATABASE_URL`
+connection. The development runtime, development migration/admin, and shadow
+connections must all report the same PostgreSQL major version because migration
+behavior can be version-dependent. Fail closed if any version cannot be
+determined or if any major version differs. No cloud project version is assumed
+verified by this document. If the selected development project's major version
+differs from `17`, either select a version-17 project or deliberately update
+`db.major_version` to match the linked remote project, restart local Supabase,
+and reverify the local stack before approval. The shadow resource must then use
+that same major version.
+
+Use current Supabase publishable-key and secret-key terminology for newly
+created projects. Do not copy key or database values into commands saved in
+shell history, documentation, logs, tickets, or screenshots.
+
+Complete these checks before cloud migration development:
+
+Use a credential-safe database client or a future repository preflight wrapper
+that reads `DATABASE_URL`, `DIRECT_URL`, and `SHADOW_DATABASE_URL` from the
+process environment internally. It must not place full URLs or passwords in
+command arguments or shell history, and it must emit only the sanitized fields
+approved below. This task does not create that future wrapper. Through each
+connection, execute the equivalent of:
+
+```sql
+select
+  current_database() as database_name,
+  current_setting('server_version') as server_version;
+```
+
+All three connections must succeed using the approved connection mode for each
+URL: transaction pooler for `DATABASE_URL`, and either the reachable direct
+endpoint or Shared Pooler session mode on port `5432` for `DIRECT_URL` and
+`SHADOW_DATABASE_URL`. Record the database name and PostgreSQL major version
+reported for each connection, and require all three major versions to match.
+Fail closed on a connection failure, an unavailable version, or a major-version
+mismatch. A client or wrapper may inspect `current_user` transiently as
+connectivity evidence, but it must not emit or retain that value.
+
+SQL output alone cannot prove Supabase project identity because
+`current_database()` and `current_user` commonly return the same values across
+projects. Separately inspect URL metadata without printing or recording a full
+URL, password, or other credential:
+
+1. For a Supabase direct endpoint matching
+   `db.<project-ref>.supabase.co`, normalize `<project-ref>` from the host.
+2. For a Supabase Shared Pooler endpoint, normalize `<project-ref>` from the
+   `postgres.<project-ref>` username. Do not use the pooler host as project
+   identity.
+3. Normalize the database name from the URL path and classify the connection
+   mode as transaction pooler, direct, or Shared Pooler session mode.
+4. Require `DATABASE_URL` and `DIRECT_URL` to resolve to the same normalized
+   development project reference and database name. Their connection modes are
+   expected to differ.
+5. Require `SHADOW_DATABASE_URL` to resolve to a project or resource identity
+   different from both development URLs. Record its database name and
+   PostgreSQL major version as well.
+
+A non-Supabase shadow database does not have, and must not be assumed to have, a
+Supabase project reference. Its accepted identity is an immutable provider
+control-plane resource, cluster, or database ID obtained by the accountable
+database owner from the authenticated provider dashboard or provider API.
+Compare that ID with the provisioned shadow target and environment inventory to
+prove that the resource is dedicated to cloud development, disposable, not
+staging or production, and distinct from the Supabase development project or
+resource. SQL database, user, and version values prove connectivity and version
+only; they do not prove resource identity. If the provider cannot expose an
+immutable control-plane identity or the accountable owner cannot verify it,
+reject the shadow target. Reject migration access if development identity or
+database-name equality is not established, or if shadow separation cannot be
+proven. URL string inequality is insufficient.
+
+Keep only sanitized preflight evidence: the normalized Supabase project
+reference, or for a non-Supabase shadow its provider label and sanitized
+immutable resource ID, plus the database name, connection mode, and PostgreSQL
+major version for each connection. Never retain full URLs, passwords, tokens,
+database users, or unredacted command output.
+
+In the cloud-development project's Auth URL Configuration:
+
+1. Set Site URL to the explicit cloud-development `APP_URL`.
+2. Add only the required cloud-development callback paths. Do not add staging
+   or production callbacks.
+3. Request a disposable confirmation, magic-link, or recovery email with that
+   redirect target.
+4. Confirm the link is accepted for the development URL and that a staging or
+   production redirect target is rejected.
+
+The fallback is ready only when the database owner records the successful
+connection and identity checks without recording credentials, and the Auth
+owner records the redirect result without recording tokens.
+
+### Required Human Approval
+
+Before Stage 1 uses either path, reviewers must approve:
+
+- local versus cloud-development isolation and confirm no developer command
+  targets Preview, staging, or production;
+- ownership and rotation responsibility for the credentials used by the
+  selected path; and
+- development Auth Site URL, allowed redirects, and local email-capture or
+  cloud email-delivery ownership, as applicable.
+
+Only when the cloud fallback is used or provisioned, reviewers must also
+approve:
+
+- the cloud project name, project reference, organization, and region;
+- equality of the PostgreSQL major versions reported by `DATABASE_URL`,
+  `DIRECT_URL`, and `SHADOW_DATABASE_URL`, plus the development project's match
+  with local `db.major_version`, with approval denied on any mismatch or
+  unverifiable version;
+- transaction pooler use and network reachability for runtime `DATABASE_URL`;
+- the selected migration and administrative connection mode for `DIRECT_URL`,
+  including IPv6 or IPv4 add-on reachability for a direct endpoint, or Shared
+  Pooler session mode on port `5432` for an IPv4-only network without the
+  add-on; and
+- when a separate shadow resource is provisioned, its sanitized Supabase
+  project reference or non-Supabase provider label and immutable resource ID,
+  database name, PostgreSQL major version, connection mode and network
+  reachability, credential ownership, least-privilege access, and evidence that
+  it is separate and disposable. Do not record additional non-Supabase
+  control-plane metadata.
+
 ## Active Stage 0/1 Variables
 
 ### Public
@@ -67,8 +304,8 @@ No other Stage 0/1 variable is browser-visible.
 | `APP_ENV` | Every application runtime | One of `local`, `cloud-development`, `preview`, `staging`, or `production`. Server-readable deployment classification. |
 | `APP_URL` | Local, cloud-development, staging, and production runtime; optional override for Preview | Canonical absolute URL for redirects and server-generated links. Staging and production require fixed domains. Preview resolution is defined below. |
 | `DATABASE_URL` | Every application runtime | Pooled Supabase PostgreSQL URL consumed when constructing the runtime Prisma Client. |
-| `DIRECT_URL` | A Prisma CLI migration or approved administrative database command runs | Direct PostgreSQL URL mapped to `datasource.url` in Prisma 7 `prisma.config.ts`. Keep it out of ordinary application execution where possible. |
-| `SHADOW_DATABASE_URL` | Cloud-development migration tooling requires a shadow database | Optional, non-production, and isolated. Mapped to `datasource.shadowDatabaseUrl` in Prisma 7 `prisma.config.ts` after migration preflight. |
+| `DIRECT_URL` | A Prisma CLI migration or approved administrative database command runs | Migration/admin PostgreSQL URL mapped to `datasource.url` in Prisma 7 `prisma.config.ts`. For cloud development, use the reachable direct endpoint or the approved Shared Pooler session-mode fallback. Keep it out of ordinary application execution where possible. |
+| `SHADOW_DATABASE_URL` | Cloud-development migration tooling requires a shadow database | Optional, non-production, and isolated. Use the shadow resource's reachable direct endpoint or approved Shared Pooler session-mode fallback. Mapped to `datasource.shadowDatabaseUrl` in Prisma 7 `prisma.config.ts` after migration preflight. |
 | `SUPABASE_SECRET_KEY` | An implemented server operation explicitly requires privileged Supabase access | Optional by default. Read only inside the server-only privileged adapter; never use it as a general application credential. |
 | `EMAIL_PROVIDER` | Every application runtime | `disabled` until email delivery is active; `resend` activates the Resend requirements below. |
 | `RESEND_API_KEY` | `EMAIL_PROVIDER=resend` | Server-only Resend credential for the current environment. |
@@ -118,8 +355,9 @@ export default defineConfig({
 Every migration or administrative wrapper must validate `DIRECT_URL` before
 invoking a Prisma CLI command that accesses the database. Cloud-development
 `prisma migrate dev` must also validate `SHADOW_DATABASE_URL`. Non-database
-commands such as client generation must not force direct or shadow credentials
-into a Vercel application build merely because Prisma loads its config file.
+commands such as client generation must not force migration/admin or shadow
+credentials into a Vercel application build merely because Prisma loads its
+config file.
 
 ## Application URL Resolution
 
@@ -153,17 +391,35 @@ String inequality between database URLs is not evidence of isolation: a pooled
 URL and a direct URL can identify the same Supabase project and database.
 Before a cloud-development migration uses a shadow database, a preflight must:
 
-1. Normalize the Supabase project identity from the direct host or pooler
-   username and normalize the database name from each URL.
+1. Normalize the Supabase project identity from a
+   `db.<project-ref>.supabase.co` direct host or a
+   `postgres.<project-ref>` Shared Pooler username, and normalize the database
+   name from each URL.
 2. Compare the shadow identity against both `DIRECT_URL` and `DATABASE_URL`.
-3. When URL parsing cannot prove identity, connect with least privilege and
-   compare authoritative live database metadata or a provisioned immutable
-   environment identity.
-4. Refuse the migration when identities match, the shadow target is staging or
-   production, or distinct identity cannot be proven.
+3. Obtain the PostgreSQL major version through `DATABASE_URL`, `DIRECT_URL`,
+   and `SHADOW_DATABASE_URL`. Require equality among the development runtime,
+   development migration/admin, and shadow connections, and fail closed when a
+   version is unavailable or differs because migration behavior can be
+   version-dependent.
+4. For a non-Supabase shadow, accept only an immutable provider control-plane
+   resource, cluster, or database ID obtained by the accountable database owner
+   from the authenticated provider dashboard or provider API. Compare it with
+   the provisioned shadow target and environment inventory, and require the
+   resource to be dedicated to cloud development, disposable, not staging or
+   production, and distinct from the Supabase development project or resource.
+5. Treat SQL database, user, and version values only as connectivity and
+   version evidence, never as resource identity. Reject the shadow target if
+   the provider cannot expose an immutable control-plane identity or the
+   accountable owner cannot verify it.
+6. Refuse the migration when identities match, the shadow target is staging or
+   production, the PostgreSQL majors differ, or distinct identity cannot be
+   proven.
 
 The shadow database contains no customer data and is disposable. A plain URL
-string comparison is never an acceptable preflight.
+string comparison is never an acceptable preflight. Retain only the sanitized
+Supabase project reference, or for a non-Supabase shadow its provider label and
+immutable resource ID, plus the database name, connection mode, and PostgreSQL
+major version as evidence. Do not retain the database user.
 
 ## Sentry Activation Matrix
 
@@ -234,7 +490,7 @@ fabricating infrastructure in Task 0.5.
 | --- | --- | --- |
 | Supabase project URL and publishable key | Platform owner | Untracked local environment or matching Vercel Development, Preview, Production, or custom target. |
 | Supabase secret key | Backend/security owner | Matching Vercel Development, Preview, Production, or custom target, or an approved local secret store, only where privileged operations exist. |
-| Pooled and direct database URLs | Database owner | Pooled URL in the matching application target; direct URL in local migration storage or a protected CI migration environment. |
+| Runtime and migration/admin database URLs | Database owner | Transaction pooler URL in the matching application target; direct or Shared Pooler session-mode URL in local migration storage or a protected CI migration environment. |
 | Shadow database URL | Database owner | Developer-local secret storage or protected cloud-development migration environment. |
 | Resend key and sender identity | Email owner | Matching non-production or production Vercel target; dashboard ownership remains restricted. |
 | Sentry DSNs and environment label | Observability owner | Matching Vercel target. Browser DSN may be public; server DSN remains server-configured. |
