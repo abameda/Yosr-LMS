@@ -124,6 +124,15 @@ tracked local configuration for this Stage 0/1 foundation. Storage, Buckets,
 Realtime, Studio, Analytics, and Edge Functions are also disabled because they
 are outside the Stage 0/1 boundary.
 
+With `[api].enabled = false`, the local gateway remains available for Auth while
+the PostgREST service is not started. An HTTP `503` response from a local
+`/rest/v1/*` request is therefore the expected unavailable-route result and
+satisfies the local "not exposed / not client-consumable" boundary. It is not a
+table-level authorization result and does not replace the migration assertions
+that RLS is enabled, browser roles have no grants, and no browser policies
+exist. A hosted development, preview, or staging project must record its own
+browser Data API denial evidence because its service topology may differ.
+
 ### Approved Fallback: Cloud Development
 
 Docker absence must not block Stage 1 when the platform owner has provisioned
@@ -450,6 +459,14 @@ unit tests before any runtime begins consuming these variables. Validation must
 happen at the process boundary and report variable names without printing
 values.
 
+Validation may be introduced incrementally as Stage 1 modules begin consuming
+configuration. Task 1.3 validates only `DATABASE_URL` before Prisma Client
+construction and `TEST_DATABASE_URL` when database integration tests run. It
+does not activate or validate application URL, Supabase Auth, email, Sentry,
+Vercel, privileged Supabase, or deferred-provider configuration. Those
+requirements remain mandatory before the corresponding runtime boundary begins
+consuming them.
+
 The validator must:
 
 1. Require `APP_ENV`, an effective application URL,
@@ -484,9 +501,10 @@ non-production test guards, and successful minimal local, preview, staging, and
 production configurations.
 
 The application scaffold, package manifest, and test runners now exist. The
-server-only environment validation module and its unit tests remain deferred
-until Stage 1 begins consuming these variables; Stage 0 configuration and the
-empty application do not read them at runtime.
+server-only environment validation module and its unit tests are introduced in
+stages as Stage 1 begins consuming variables. Task 1.3 owns the database-only
+subset. Stage 0 configuration and the empty application do not read the
+remaining variables at runtime.
 
 ## Ownership and Storage
 

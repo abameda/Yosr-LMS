@@ -810,6 +810,9 @@ Ensure application data is accessed only through trusted server code.
 
 **In scope**
 
+- Minimum server-only database environment validation before runtime code
+  consumes `DATABASE_URL`, plus `TEST_DATABASE_URL` validation only for
+  database integration tests.
 - PostgreSQL adapter-backed Prisma client.
 - Development-safe singleton behavior.
 - Server-only import boundary.
@@ -817,18 +820,27 @@ Ensure application data is accessed only through trusted server code.
 
 **Out of scope**
 
+- Broad application environment validation for Auth, application URLs, email,
+  Sentry, Vercel deployment guards, privileged Supabase access, or deferred
+  providers.
 - Browser Prisma access.
 - Browser Supabase table queries.
 - Generic repository abstraction for future modules.
 
 **Expected files or module boundaries**
 
+- `src/lib/environment/database.ts`
 - `src/lib/database/`
 - `src/modules/identity/repositories/`
 - Generated Prisma client remains server-only.
 
 **Acceptance criteria**
 
+- Missing, empty, malformed, non-PostgreSQL, or direct Supabase
+  `DATABASE_URL` values fail before Prisma Client construction without
+  exposing the value.
+- Database integration tests require an explicit `TEST_DATABASE_URL` and do
+  not fall back to `DATABASE_URL`.
 - Client Components cannot import database modules.
 - Identity repositories expose only operations required by Stage 1.
 - Browser publishable credentials cannot read or modify protected tables.
