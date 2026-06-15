@@ -5,6 +5,7 @@
 /coverage
 /playwright-report
 /test-results
+/src/generated/server/prisma
 
 .env*
 !.env.example

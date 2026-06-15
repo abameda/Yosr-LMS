@@ -6,7 +6,7 @@ Launch requires every blocking item to be complete or explicitly waived by the r
 
 | Task | Implementation status | Required review |
 | --- | --- | --- |
-| Task 0.7: Validate Supabase Development Strategy | Pinned CLI, lifecycle scripts, local configuration, Windows-safe ports, environment strategy, and local start/status/health/stop evidence are present. | Named platform/database owner and reviewer confirmation pending. |
+| Task 0.7: Validate Supabase Development Strategy | Pinned CLI, lifecycle scripts, local configuration, Windows-safe ports, environment strategy, and local start/status/health/stop evidence are present. | Approved by the project owner for Stage 1 on 2026-06-15. |
 | Task 0.8: Prepare Active Stage 0/1 Services | Readiness register, environment mappings, ownership roles, evidence rules, and external verification procedures are present. Local Supabase evidence is recorded as unverified pending signoff. | Active-service owner confirmations and external checks remain pending. |
 | Task 0.9: Document Future Provider Gates | Readiness boundaries, deferred inventories, owners, checklists, and blocker scope are documented. | Product and architecture review pending. |
 
@@ -14,7 +14,8 @@ Launch requires every blocking item to be complete or explicitly waived by the r
 
 | Task | Implementation status | Required review |
 | --- | --- | --- |
-| Task 1.1: Create the Arabic-First Application Shell | Arabic/RTL document defaults, public/authenticated/admin route groups, shadcn-compatible RTL configuration, identity shell and form primitives, Arabic loading/error states, mixed-direction boundaries, and Chromium/WebKit smoke coverage are implemented. Automated tests verify the shell at 360px without horizontal overflow and verify visible focus treatment. | Human Arabic, RTL, mobile, and basic accessibility review remains pending before Task 1.1 is approved. |
+| Task 1.1: Create the Arabic-First Application Shell | Arabic/RTL document defaults, public/authenticated/admin route groups, shadcn-compatible RTL configuration, identity shell and form primitives, Arabic loading/error states, mixed-direction boundaries, and Chromium/WebKit smoke coverage are implemented. Automated tests verify the shell at 360px without horizontal overflow and verify visible focus treatment. | Approved by the project owner on 2026-06-15. |
+| Task 1.2: Create the Identity Data Model and First Migration | Prisma 7.8.0, the PostgreSQL adapter, the identity schema, generated-client configuration, the first reviewed SQL migration, and pgTAP coverage are implemented. The migration creates only User, LearnerProfile, and AdminAuditEvent, enforces identity uniqueness, enables RLS, and defines no browser policies. A targeted npm override resolves the Prisma CLI's vulnerable transitive `@hono/node-server` dependency to patched version 1.19.13; `npm audit` reports zero vulnerabilities. Local verification includes 16 passing database assertions, an applied migration with no schema drift, and the full project verification gate. | Approved by the project owner on 2026-06-15. |
 
 ## Stage 0 Readiness
 
