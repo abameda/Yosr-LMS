@@ -2,6 +2,12 @@
 
 Launch requires every blocking item to be complete or explicitly waived by the responsible owner with a documented reason.
 
+## Foundation Documentation Progress
+
+| Task | Implementation status | Required review |
+| --- | --- | --- |
+| Task 0.9: Document Future Provider Gates | Readiness boundaries, deferred inventories, owners, checklists, and blocker scope documented and locally verified on June 14, 2026. | Product and architecture review pending. |
+
 ## Product and Content
 
 - [ ] Launch Categories are intentional and limited.

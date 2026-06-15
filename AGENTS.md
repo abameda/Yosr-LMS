@@ -12,19 +12,33 @@ For any staged implementation task, start with the execution plan that matches t
 
 Examples:
 
-* `docs/execution/STAGE-0-1-EXECUTION-PLAN.md`
-* `docs/execution/STAGE-2-EXECUTION-PLAN.md`
-* `docs/execution/STAGE-3-EXECUTION-PLAN.md`
+- `docs/execution/STAGE-0-1-EXECUTION-PLAN.md`
+- `docs/execution/STAGE-0-2-EXECUTION-PLAN.md`
+- `docs/execution/STAGE-1-1-EXECUTION-PLAN.md`
 
 If multiple stage execution plans exist, identify the active stage from the repository state and use the corresponding execution plan before implementing changes.
 
-* `STAGED-IMPLEMENTATION-PLAN.md`
-* `MVP-SCOPE.md`
-* `docs/operations/ENVIRONMENTS.md`
-* `docs/operations/LOGGING-AND-DATA-HANDLING.md`
-* Relevant ADRs under `docs/adr/`
+- `STAGED-IMPLEMENTATION-PLAN.md`
+- `MVP-SCOPE.md`
+- `docs/operations/ENVIRONMENTS.md`
+- `docs/operations/LOGGING-AND-DATA-HANDLING.md`
+- Relevant ADRs under `docs/adr/`
 
 Use the execution plan as the task-level guide, but use ADRs and operations docs as architectural and environment constraints.
+
+## Progress tracking
+
+Maintain `LAUNCH-CHECKLIST.md` as part of the implementation workflow.
+
+After completing any task, update `LAUNCH-CHECKLIST.md` to accurately reflect current project progress.
+
+When updating the checklist:
+
+- Mark completed items that were finished by the current task.
+- Update progress indicators, statuses, or notes where applicable.
+- Do not mark work as complete unless it has actually been implemented and verified.
+- Keep the checklist aligned with the execution plan and repository state.
+- If the checklist appears outdated or conflicts with implementation status, report the discrepancy and update it accordingly.
 
 ## Conflict handling
 
@@ -44,12 +58,12 @@ Do not introduce new providers, services, environment variables, or architecture
 
 ## Current architecture constraints
 
-* Keep the project aligned with the documented Supabase platform direction.
-* Do not introduce Supabase Buckets unless the documentation explicitly changes.
-* Respect the latest R2 storage direction and environment contract.
-* Do not add premature provider variables.
-* Keep payments provider-aware and aligned with the payment ADR.
-* Keep video handling aligned with the VdoCipher ADR.
+- Keep the project aligned with the documented Supabase platform direction.
+- Do not introduce Supabase Buckets unless the documentation explicitly changes.
+- Respect the latest R2 storage direction and environment contract.
+- Do not add premature provider variables.
+- Keep payments provider-aware and aligned with the payment ADR.
+- Keep video handling aligned with the VdoCipher ADR.
 
 ## Verification
 
@@ -57,9 +71,9 @@ After changes, run the project’s required verification commands when available
 
 Prefer:
 
-* `npm ci` when dependencies need validation
-* `CI=true npm run verify` for full verification
-* any task-specific tests mentioned in the execution plan
+- `npm ci` when dependencies need validation
+- `CI=true npm run verify` for full verification
+- any task-specific tests mentioned in the execution plan
 
 If a command cannot run, explain why.
 
@@ -73,6 +87,7 @@ At the end of each task, summarize:
 4. Results
 5. Blockers or risks
 6. Whether the worktree is clean or has pending changes
+7. Changes made to `LAUNCH-CHECKLIST.md`
 
 ## Safety
 
