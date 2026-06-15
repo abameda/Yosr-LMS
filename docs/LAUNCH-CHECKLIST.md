@@ -10,10 +10,17 @@ Launch requires every blocking item to be complete or explicitly waived by the r
 | Task 0.8: Prepare Active Stage 0/1 Services | Readiness register, environment mappings, ownership roles, evidence rules, and external verification procedures are present. Local Supabase evidence is recorded as unverified pending signoff. | Active-service owner confirmations and external checks remain pending. |
 | Task 0.9: Document Future Provider Gates | Readiness boundaries, deferred inventories, owners, checklists, and blocker scope are documented. | Product and architecture review pending. |
 
+## Stage 1 Foundation Progress
+
+| Task | Implementation status | Required review |
+| --- | --- | --- |
+| Task 1.1: Create the Arabic-First Application Shell | Arabic/RTL document defaults, public/authenticated/admin route groups, shadcn-compatible RTL configuration, identity shell and form primitives, Arabic loading/error states, mixed-direction boundaries, and Chromium/WebKit smoke coverage are implemented. Automated tests verify the shell at 360px without horizontal overflow and verify visible focus treatment. | Human Arabic, RTL, mobile, and basic accessibility review remains pending before Task 1.1 is approved. |
+
 ## Stage 0 Readiness
 
-**Status: REPOSITORY REMEDIATION COMPLETE / EXTERNAL VERIFICATION REQUIRED /
-NOT APPROVED as of 2026-06-15.** See
+**Status: APPROVED FOR STAGE 1 / EXTERNAL VERIFICATION REMAINS OPEN as of
+2026-06-15.** The project owner accepted the visible residual external checks
+and authorized Stage 1 to begin. See
 `docs/operations/STAGE-0-EXIT-EVIDENCE.md`.
 
 - [x] Empty application scaffold, lint, type-checking, unit tests, Playwright smoke test, production build, and full `npm.cmd run verify` are locally evidenced.
@@ -32,7 +39,7 @@ NOT APPROVED as of 2026-06-15.** See
 - [ ] HUMAN/EXTERNAL VERIFICATION REQUIRED: Preview Supabase isolation, controlled non-production Auth email, and Sentry settings.
 - [ ] HUMAN/EXTERNAL VERIFICATION REQUIRED: production credentials and data are absent from every non-production scope.
 - [x] R2, payment-provider, and video-provider accounts and credentials are correctly non-blocking until their documented future entry gates.
-- [ ] REQUIRED: human Stage 0 approval before any Stage 1 identity implementation.
+- [x] HUMAN GATE: project owner approved Stage 0 and authorized Stage 1 to begin on 2026-06-15; open external checks remain pending and must not be reported as verified.
 
 ## Product and Content
 
@@ -167,14 +174,14 @@ NOT APPROVED as of 2026-06-15.** See
 
 ## Arabic, Mobile, and Accessibility
 
-- [ ] Arabic is the default language.
+- [x] Arabic is the default language.
 - [ ] RTL layout works across public and protected pages.
 - [ ] Mixed Arabic, English, numbers, prices, emails, and references render correctly.
 - [ ] Core journeys work at 360px width.
 - [ ] Touch targets are usable.
 - [ ] Forms provide clear Arabic labels and errors.
 - [ ] Keyboard navigation works.
-- [ ] Focus states are visible.
+- [x] Focus states are visible for the Task 1.1 identity primitives and public skip link.
 - [ ] Contrast meets the agreed accessibility target.
 - [ ] Video captions are supported where content provides them.
 - [ ] Reduced-motion preference is respected.

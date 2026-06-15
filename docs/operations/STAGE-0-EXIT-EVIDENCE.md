@@ -2,20 +2,23 @@
 
 ## Decision
 
-**Overall status:** REPOSITORY REMEDIATION COMPLETE; EXTERNAL VERIFICATION REQUIRED
+**Overall status:** APPROVED FOR STAGE 1; EXTERNAL VERIFICATION REMAINS OPEN
 
-**Approval status:** NOT APPROVED
+**Approval status:** APPROVED BY PROJECT OWNER
 
 **Review date:** 2026-06-15
+
+**Approval date:** 2026-06-15
 
 **Reviewed branch:** local `main`, based on integrated task-branch merge
 `6ddd7b8` plus the remediation changes recorded by this review
 
 The repository blockers reported by the original Task 0.10 review are resolved.
-Stage 0 is ready for human and external evidence collection and re-review, but
-it is not ready for final approval until the active-service checks below are
-confirmed by authorized owners and reviewers. Stage 1 must not begin before a
-human records the Stage 0 approval.
+On 2026-06-15, the project owner explicitly approved Stage 0 and authorized
+Stage 1 to begin. The active-service checks below remain open and must still be
+completed before they can be represented as verified. This approval accepts
+those items as visible residual operational work; it does not convert missing
+external evidence into a passing result.
 
 Cloudflare R2, payment-provider, and video-provider accounts, credentials, and
 configuration remain deferred and non-blocking for Stage 0 and Stage 1.
@@ -111,7 +114,8 @@ The following are active Stage 0/1 checks, not future-provider requirements:
    review.
 8. Complete product and architecture review of the future-provider readiness
    document.
-9. Record explicit human Stage 0 approval.
+9. COMPLETED 2026-06-15: the project owner explicitly approved Stage 0 and
+   authorized Stage 1 to begin while retaining the open external checks above.
 
 ## Deferred Providers
 
@@ -126,7 +130,6 @@ Their absence does not block Stage 0 or Stage 1.
 
 ## Human Gate
 
-**Stage 0 has not been approved by this review. The repository is prepared for
-human/external verification and re-review. Stage 1 identity implementation must
-not begin until the remaining active checks are recorded and a human explicitly
-approves the Stage 0 exit.**
+**Stage 0 was explicitly approved by the project owner on 2026-06-15. Stage 1
+may begin. The remaining external checks stay open and must not be reported as
+complete until their evidence is recorded.**
