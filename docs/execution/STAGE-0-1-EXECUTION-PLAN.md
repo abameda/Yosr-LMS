@@ -900,7 +900,8 @@ Establish trusted cookie-based authentication and session refresh.
 **Expected files or module boundaries**
 
 - `src/lib/supabase/`
-- Root `proxy.ts`
+- `src/proxy.ts`, colocated with `src/app` as required by the current Next.js
+  project structure.
 - `src/modules/identity/session/`
 
 **Acceptance criteria**
