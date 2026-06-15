@@ -2,6 +2,7 @@ import { fork, type ChildProcess } from "node:child_process";
 import { resolve } from "node:path";
 
 interface StartPlaywrightServerOptions {
+  environment?: Record<string, string | undefined>;
   port: number;
 }
 
@@ -99,12 +100,14 @@ function closeProcess(process: ChildProcess) {
 }
 
 export async function startPlaywrightServer({
+  environment,
   port,
 }: StartPlaywrightServerOptions) {
   const process = fork(serverPath, {
     cwd: repositoryRoot,
     env: {
       ...globalThis.process.env,
+      ...environment,
       NODE_ENV: "development",
       PLAYWRIGHT_SERVER_PORT: String(port),
     },

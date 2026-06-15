@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/server/prisma"
+  runtime  = "nodejs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+}
+
+model User {
+  id               String            @id @default(uuid()) @db.Uuid
+  authUserId       String            @unique @map("auth_user_id") @db.Uuid
+  normalizedEmail  String            @unique @map("normalized_email") @db.VarChar(320)
+  role             UserRole          @default(CUSTOMER)
+  status           UserStatus        @default(ACTIVE)
+  emailVerifiedAt  DateTime?         @map("email_verified_at") @db.Timestamptz(6)
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+  learnerProfile   LearnerProfile?
+  adminAuditEvents AdminAuditEvent[] @relation("AdminAuditActor")
+
+  @@index([role, status])
+  @@map("users")
+}
+
+model LearnerProfile {
+  id                    String   @id @default(uuid()) @db.Uuid
+  userId                String   @unique @map("user_id") @db.Uuid
+  displayName           String   @map("display_name") @db.VarChar(200)
+  educationalLevelLabel String?  @map("educational_level_label") @db.VarChar(120)
+  createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("learner_profiles")
+}
+
+model AdminAuditEvent {
+  id               String   @id @default(uuid()) @db.Uuid
+  adminUserId      String   @map("admin_user_id") @db.Uuid
+  actionType       String   @map("action_type") @db.VarChar(100)
+  targetEntityType String   @map("target_entity_type") @db.VarChar(100)
+  targetEntityId   String   @map("target_entity_id") @db.VarChar(128)
+  beforeSummary    Json?    @map("before_summary")
+  afterSummary     Json?    @map("after_summary")
+  reason           String   @db.VarChar(500)
+  correlationId    String   @map("correlation_id") @db.Uuid
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  adminUser        User     @relation("AdminAuditActor", fields: [adminUserId], references: [id], onDelete: Restrict)
+
+  @@index([adminUserId, createdAt])
+  @@index([targetEntityType, targetEntityId])
+  @@map("admin_audit_events")
+}

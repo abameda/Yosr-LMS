@@ -2,6 +2,7 @@
   "name": "lms",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "engines": {
     "node": "24.x"
   },
@@ -15,6 +16,7 @@
     "typecheck": "tsc --noEmit",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
+    "test:integration": "vitest run --config vitest.integration.config.mts",
     "test:e2e:install": "playwright install chromium webkit",
     "test:e2e": "playwright test",
     "supabase:start": "supabase start",
@@ -23,13 +25,20 @@
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test:unit && npm run test:e2e && npm run build"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "7.8.0",
+    "@prisma/client": "7.8.0",
     "@radix-ui/react-label": "2.1.9",
     "@radix-ui/react-slot": "1.2.5",
+    "@supabase/ssr": "0.12.0",
+    "@supabase/supabase-js": "2.108.2",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
+    "dotenv": "17.2.3",
     "next": "16.2.9",
+    "pg": "8.21.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "server-only": "0.0.1",
     "tailwind-merge": "3.6.0"
   },
   "devDependencies": {
@@ -38,6 +47,7 @@
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.2",
     "@types/node": "24.13.2",
+    "@types/pg": "8.20.0",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "eslint": "9.39.4",
@@ -45,12 +55,14 @@
     "jsdom": "29.1.1",
     "postcss": "8.5.15",
     "prettier": "3.8.4",
+    "prisma": "7.8.0",
     "supabase": "2.106.0",
     "tailwindcss": "4.3.1",
     "typescript": "5.9.3",
     "vitest": "4.1.8"
   },
   "overrides": {
+    "@hono/node-server": "1.19.13",
     "next": {
       "postcss": "$postcss"
     }

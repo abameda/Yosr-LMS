@@ -13,10 +13,8 @@ export default defineConfig({
   },
   test: {
     clearMocks: true,
-    environment: "jsdom",
-    exclude: ["src/**/*.integration.test.ts"],
-    include: ["src/**/*.test.{ts,tsx}"],
+    environment: "node",
+    include: ["src/**/*.integration.test.ts"],
     restoreMocks: true,
-    setupFiles: ["./src/test/setup.ts"],
   },
 });

@@ -23,7 +23,13 @@ function getStatus(url: string) {
 
 describe("Playwright application server", () => {
   it("starts and closes without leaving its listener open", async () => {
-    const applicationServer = await startPlaywrightServer({ port: 0 });
+    const applicationServer = await startPlaywrightServer({
+      environment: {
+        NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_test-value",
+        NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:55321",
+      },
+      port: 0,
+    });
 
     expect(applicationServer.process.exitCode).toBeNull();
     expect(await getStatus(applicationServer.url)).toBe(200);

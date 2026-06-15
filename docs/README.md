@@ -29,7 +29,13 @@ When documents appear to conflict, use this order:
 
 ## Current Status
 
-The product design is approved for documentation. Application code, database migrations, infrastructure provisioning, and UI implementation have not started.
+The product design and Stage 0 foundation are approved for Stage 1. The
+root-level Next.js application scaffold and Task 1.1 Arabic-first application
+shell are implemented. Task 0.7's Supabase database strategy and Task 1.1's
+human review gates were approved by the project owner on 2026-06-15. Task 1.2's
+Prisma identity schema and first migration are implemented and locally
+verified, with mandatory migration and RLS review pending. The remaining Stage
+1 identity behavior has not started.
 
 ## Working Rule
 
