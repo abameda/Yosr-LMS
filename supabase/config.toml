@@ -6,16 +6,16 @@ project_id = "lms"
 # Keep the gateway port for Auth, but do not start PostgREST or expose the
 # browser-facing Data API and GraphQL endpoint in the Stage 0/1 foundation.
 enabled = false
-port = 54321
+port = 55321
 
 [db]
-port = 54322
-shadow_port = 54320
+port = 55322
+shadow_port = 55320
 major_version = 17
 
 [db.pooler]
 enabled = true
-port = 54329
+port = 55329
 pool_mode = "transaction"
 default_pool_size = 20
 max_client_conn = 100
@@ -37,7 +37,7 @@ enabled = false
 # Supabase CLI currently names this section "inbucket"; the service is Mailpit.
 [inbucket]
 enabled = true
-port = 54324
+port = 55324
 
 [storage]
 enabled = false

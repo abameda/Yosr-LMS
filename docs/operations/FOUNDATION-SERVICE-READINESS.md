@@ -96,9 +96,10 @@ Use the environment names and `APP_ENV` values from
 
 ## Repository Evidence Snapshot
 
-Snapshot date: `2026-06-14`
+Snapshot date: `2026-06-15`
 
-Snapshot commit: `b879734`
+Snapshot base: integrated Stage 0 task branches on local `main`; final
+remediation commit pending.
 
 The repository currently proves only the following:
 
@@ -109,6 +110,11 @@ The repository currently proves only the following:
 - The workflow runs `npm run verify` without service credentials.
 - No tracked Supabase, Resend, Sentry, or Vercel project linkage or successful
   external verification result was found.
+- The pinned Supabase CLI `2.106.0` successfully started the tracked local
+  stack on Windows-safe ports. The database, pooler, Auth gateway, and Mailpit
+  containers reported healthy; the Auth and Mailpit HTTP checks returned
+  `200`; and `supabase stop` completed. No generated local credential is
+  retained in this document.
 - No tracked R2, payment-provider, or video-provider configuration is required
   by the current application or CI workflow.
 
@@ -384,12 +390,12 @@ the Stage 1 exit gate and does not block Task 0.8.
 
 | ID                  | Check and environment                                                         | Gate         | Status       | Owner confirmation, UTC date | Reviewer confirmation, UTC review date | Evidence or review reference                                                                          |
 | ------------------- | ----------------------------------------------------------------------------- | ------------ | ------------ | ---------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `SUP-DEV`           | Supabase connectivity in Local or Cloud development                           | Task 0.8     | `PLANNED`    | Not recorded                 | Not recorded                           | Not recorded                                                                                          |
+| `SUP-DEV`           | Supabase connectivity in Local or Cloud development                           | Task 0.8     | `UNVERIFIED` | Not recorded                 | Not recorded                           | Local repository check passed on 2026-06-15 using Supabase CLI `2.106.0`; owner and reviewer confirmation remain required. |
 | `SUP-PREVIEW`       | Full Supabase resource isolation for Preview                                  | Task 0.8     | `PLANNED`    | Not recorded                 | Not recorded                           | Not recorded                                                                                          |
 | `SUP-STAGING`       | Supabase connectivity in Staging                                              | Stage 1 exit | `PLANNED`    | Not recorded                 | Not recorded                           | Not recorded                                                                                          |
 | `EMAIL-NONPROD`     | Supabase Auth email through Resend in one approved non-production environment | Task 0.8     | `PLANNED`    | Not recorded                 | Not recorded                           | Not recorded                                                                                          |
 | `SENTRY-NONPROD`    | Sentry project and settings readiness for Preview and Staging                 | Task 0.8     | `PLANNED`    | Not recorded                 | Not recorded                           | Not recorded                                                                                          |
-| `GITHUB-ACTIONS`    | GitHub remote, Actions availability, and successful quality-gate run          | Task 0.8     | `UNVERIFIED` | Not recorded                 | Not recorded                           | Repository evidence only: snapshot `b879734` and `.github/workflows/ci.yml`; hosted run not recorded. |
+| `GITHUB-ACTIONS`    | GitHub remote, Actions availability, and successful quality-gate run          | Task 0.8     | `UNVERIFIED` | Not recorded                 | Not recorded                           | Historical run `27490886232` passed a synthetic merge for head `005d910`; the current local approval state is unpushed and has no hosted run. |
 | `VERCEL-PREVIEW`    | Vercel Preview build using only active Stage 0/1 variables                    | Task 0.8     | `PLANNED`    | Not recorded                 | Not recorded                           | Not recorded                                                                                          |
 | `NONPROD-ISOLATION` | Production credential and data isolation from every non-production scope      | Task 0.8     | `PLANNED`    | Not recorded                 | Not recorded                           | Not recorded                                                                                          |
 

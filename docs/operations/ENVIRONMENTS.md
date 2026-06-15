@@ -79,26 +79,29 @@ access or production use. Stop the stack after use as required below.
 The tracked `supabase/config.toml` enables only the local services needed for
 Stage 1:
 
+The local ports use the `5532x` range to avoid Windows dynamic port exclusions
+that can reserve the Supabase CLI defaults.
+
 | Service | Local address | Purpose |
 | --- | --- | --- |
-| Supabase Auth gateway | `http://localhost:54321` | Base URL for local Auth routes such as `/auth/v1`; it is not a general Data API endpoint. |
-| PostgreSQL direct connection | `localhost:54322` | `DIRECT_URL` and migration or administrative access. |
-| PostgreSQL transaction pooler | `localhost:54329` | Runtime `DATABASE_URL`. |
-| Mailpit | `http://localhost:54324` | Captures local Auth confirmation and recovery email; it does not deliver mail externally. |
+| Supabase Auth gateway | `http://localhost:55321` | Base URL for local Auth routes such as `/auth/v1`; it is not a general Data API endpoint. |
+| PostgreSQL direct connection | `localhost:55322` | `DIRECT_URL` and migration or administrative access. |
+| PostgreSQL transaction pooler | `localhost:55329` | Runtime `DATABASE_URL`. |
+| Mailpit | `http://localhost:55324` | Captures local Auth confirmation and recovery email; it does not deliver mail externally. |
 
 After startup, use `npm run supabase:status` to confirm the running services and
 obtain generated local keys and database details. Put the resulting values only
 in untracked `.env.local`:
 
 - `APP_ENV=local` and `APP_URL=http://localhost:3000`.
-- `NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321` points to the tracked local
+- `NEXT_PUBLIC_SUPABASE_URL=http://localhost:55321` points to the tracked local
   Auth gateway. Do not treat this base URL as a generic API surface.
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` receives the reported browser-safe
   local publishable key.
 - `DATABASE_URL` derives from the reported direct database URL but uses port
-  `54329`, the tenant-qualified local user `postgres.pooler-dev`, and
+  `55329`, the tenant-qualified local user `postgres.pooler-dev`, and
   `sslmode=disable`. Keep the password reported by the local CLI.
-- `DIRECT_URL` uses the direct local database endpoint on port `54322`.
+- `DIRECT_URL` uses the direct local database endpoint on port `55322`.
 - `SHADOW_DATABASE_URL` is not required for the local path; the CLI-managed
   shadow database uses the configured local shadow port.
 
@@ -330,7 +333,8 @@ application's sole environment classification.
 Runtime and migration connections are separate contracts:
 
 - Runtime Prisma Client construction uses only the pooled `DATABASE_URL`.
-- Root-level `prisma.config.ts` explicitly imports `dotenv/config`.
+- The Stage 1 root-level `prisma.config.ts` will explicitly import
+  `dotenv/config`.
 - Its Prisma 7 `datasource.url` value comes from `DIRECT_URL`.
 - Its optional `datasource.shadowDatabaseUrl` value comes from
   `SHADOW_DATABASE_URL`.
@@ -479,10 +483,10 @@ shadow identity equality and indeterminate cases, the preview-production guard,
 non-production test guards, and successful minimal local, preview, staging, and
 production configurations.
 
-The repository currently has no application scaffold, package manifest,
-environment module, or test runner. Therefore this validation module and its
-unit tests are deliberately deferred to the first application task rather than
-fabricating infrastructure in Task 0.5.
+The application scaffold, package manifest, and test runners now exist. The
+server-only environment validation module and its unit tests remain deferred
+until Stage 1 begins consuming these variables; Stage 0 configuration and the
+empty application do not read them at runtime.
 
 ## Ownership and Storage
 

@@ -6,7 +6,33 @@ Launch requires every blocking item to be complete or explicitly waived by the r
 
 | Task | Implementation status | Required review |
 | --- | --- | --- |
-| Task 0.9: Document Future Provider Gates | Readiness boundaries, deferred inventories, owners, checklists, and blocker scope documented and locally verified on June 14, 2026. | Product and architecture review pending. |
+| Task 0.7: Validate Supabase Development Strategy | Pinned CLI, lifecycle scripts, local configuration, Windows-safe ports, environment strategy, and local start/status/health/stop evidence are present. | Named platform/database owner and reviewer confirmation pending. |
+| Task 0.8: Prepare Active Stage 0/1 Services | Readiness register, environment mappings, ownership roles, evidence rules, and external verification procedures are present. Local Supabase evidence is recorded as unverified pending signoff. | Active-service owner confirmations and external checks remain pending. |
+| Task 0.9: Document Future Provider Gates | Readiness boundaries, deferred inventories, owners, checklists, and blocker scope are documented. | Product and architecture review pending. |
+
+## Stage 0 Readiness
+
+**Status: REPOSITORY REMEDIATION COMPLETE / EXTERNAL VERIFICATION REQUIRED /
+NOT APPROVED as of 2026-06-15.** See
+`docs/operations/STAGE-0-EXIT-EVIDENCE.md`.
+
+- [x] Empty application scaffold, lint, type-checking, unit tests, Playwright smoke test, production build, and full `npm.cmd run verify` are locally evidenced.
+- [x] Task 0.7 Supabase strategy, pinned CLI, lifecycle scripts, tracked configuration, and sanitized local lifecycle evidence are present.
+- [x] Task 0.8 foundation-service readiness register and external verification procedures are present.
+- [x] Task 0.9 future-provider readiness gates are present.
+- [x] `.env.example` contains only active Stage 0/1 variables with blank or example-safe values.
+- [x] `docs/operations/ENVIRONMENTS.md` reflects the current scaffold and test-runner state.
+- [x] `AGENTS.md` formatting and trailing whitespace are clean without semantic changes.
+- [x] Playwright/e2e completes reliably after a clean dependency and browser installation; repeated direct runs and the full verification run terminated normally.
+- [x] HISTORICAL CI: GitHub Actions run `27490886232` passed the complete `Quality Gates` job on synthetic PR merge commit `569e39eafe85ce9df1724d89c1cecc53d5dbbd6f`, merging head `005d9104c5790f039341ea4fc5520363e289b714` into base `9d929fc9f07ca45d8f1890a0d330d43060d63bd4`; it did not directly test the head commit.
+- [x] CI-LOG REVIEW: decoded job `81255640354` masked GitHub tokens as `***`; no application/provider credential, production environment value, or secret-shaped assignment was visible in the reviewed job log.
+- [ ] HUMAN/EXTERNAL VERIFICATION REQUIRED: named owners and reviewers for active Stage 0/1 services.
+- [ ] HUMAN/EXTERNAL VERIFICATION REQUIRED: current-commit GitHub Actions success after the local commits are pushed.
+- [ ] HUMAN/EXTERNAL VERIFICATION REQUIRED: Vercel Preview build and preview/production variable-scope isolation.
+- [ ] HUMAN/EXTERNAL VERIFICATION REQUIRED: Preview Supabase isolation, controlled non-production Auth email, and Sentry settings.
+- [ ] HUMAN/EXTERNAL VERIFICATION REQUIRED: production credentials and data are absent from every non-production scope.
+- [x] R2, payment-provider, and video-provider accounts and credentials are correctly non-blocking until their documented future entry gates.
+- [ ] REQUIRED: human Stage 0 approval before any Stage 1 identity implementation.
 
 ## Product and Content
 
