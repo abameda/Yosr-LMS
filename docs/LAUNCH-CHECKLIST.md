@@ -18,6 +18,7 @@ Launch requires every blocking item to be complete or explicitly waived by the r
 | Task 1.2: Create the Identity Data Model and First Migration | Prisma 7.8.0, the PostgreSQL adapter, the identity schema, generated-client configuration, the first reviewed SQL migration, and pgTAP coverage are implemented. The migration creates only User, LearnerProfile, and AdminAuditEvent, enforces identity uniqueness, enables RLS, and defines no browser policies. A targeted npm override resolves the Prisma CLI's vulnerable transitive `@hono/node-server` dependency to patched version 1.19.13; `npm audit` reports zero vulnerabilities. Local verification includes 16 passing database assertions, an applied migration with no schema drift, and the full project verification gate. | Approved by the project owner on 2026-06-15. |
 | Task 1.3: Add Server-Only Prisma Access | Minimum `DATABASE_URL` and `TEST_DATABASE_URL` validation, a PostgreSQL adapter-backed development singleton, server-only import enforcement, focused User and LearnerProfile repositories, and database integration coverage are implemented. The ignored server-only Prisma client is regenerated before TypeScript, unit/integration test, and production build commands so clean CI checkouts do not depend on local generated files. Local verification includes 24 passing unit tests, 3 passing repository integration tests, 16 passing database assertions, and expected HTTP 503 route unavailability for anonymous and authenticated browser Data API requests while Auth remains healthy. See `docs/operations/TASK-1-3-DATABASE-ACCESS-EVIDENCE.md`. | Approved by the project owner on 2026-06-15. Hosted environment Data API denial remains a later environment-specific verification requirement. |
 | Task 1.4: Add Supabase SSR Authentication | Supabase browser, server, proxy, and narrowly scoped privileged clients are implemented with explicit environment validation. `src/proxy.ts` refreshes cookie-backed Auth through trusted `getClaims()` validation, propagates refreshed cookies to request and response state, and prevents Auth-cookie responses from being publicly cached. Authenticated and Admin route groups force dynamic rendering. Local verification includes 51 passing unit tests, 8 passing Playwright tests across Chromium and WebKit when local Auth is available, live refresh of a synthetic valid stale session, credential-free CI verification with the live refresh cases skipped, stale-cookie cache checks, and a production build that reports the active Proxy middleware. | Approved by the project owner on 2026-06-15 through the instruction to commit and push after successful plan verification. |
+| Task 1.5: Implement Registration and Idempotent Customer Provisioning | Arabic email/password registration, server-side validation, Supabase Auth signup, duplicate-email guidance, and transaction-backed Customer provisioning are implemented. Provisioning normalizes email, assigns only server-controlled `CUSTOMER`/`ACTIVE` defaults, creates exactly one LearnerProfile, preserves existing role/status and verified state, and repairs a missing profile without duplication. Local verification includes 61 passing unit tests, 5 passing integration tests, 16 passing database assertions, and 12 passing live Playwright tests across Chromium and WebKit with Mailpit confirmation-email evidence. | Authentication and identity-data review pending. |
 
 ## Stage 0 Readiness
 
@@ -59,11 +60,11 @@ and authorized Stage 1 to begin. See
 
 ## Authentication and Authorization
 
-- [ ] Registration works.
+- [x] Registration works.
 - [ ] Email verification works.
 - [ ] Login and logout work.
 - [ ] Password reset works.
-- [ ] One Customer maps to one Learner profile.
+- [x] One Customer maps to one Learner profile.
 - [ ] Customer and Admin permissions are enforced server-side.
 - [ ] Customers cannot access other Customers' records.
 - [ ] Disabled accounts lose protected access.
